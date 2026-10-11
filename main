@@ -1,0 +1,44 @@
+import random
+import telebot  # Единственный импорт для работы с ботом
+
+# Вставьте сюда ваш токен от @BotFather
+BOT_TOKEN = 'TOKEN'
+bot = telebot.TeleBot(BOT_TOKEN)
+
+# Список фактов
+FACTS = [
+    "🌍 С начала XX века средняя температура воздуха на Земле выросла примерно на 1.1°C.",
+    "🏔️ Ледники по всему миру стремительно тают. Из-за этого уровень Мирового океана растет примерно на 3.4 мм в год.",
+    "🌊 Около 90% избыточного тепла, вызванного глобальным потеплением, поглощается океанами.",
+    "📉 По прогнозам ученых, к 2040-м годам Северный Ледовитый океан в летний период может полностью освобождаться от льда.",
+    "🌪️ Изменение климата делает экстремальные погодные явления (засухи, наводнения, ураганы) более частыми и разрушительными.",
+    "🦖 Скорость вымирания видов животных и растений сейчас в сотни раз выше естественного уровня из-за изменения среды обитания."
+]
+
+# Создаем клавиатуру с кнопкой
+def get_keyboard():
+    markup = telebot.types.ReplyKeyboardMarkup(resize_keyboard=True)
+    markup.add(telebot.types.KeyboardButton("Узнать про глобальное потепление 🌍"))
+    return markup
+
+# Обработка команды /start
+@bot.message_handler(commands=['start'])
+def send_welcome(message):
+    bot.send_message(
+        message.chat.id,
+        f"Привет, {message.from_user.first_name}! Я бот, рассказывающий о глобальном потеплении.\n\n"
+        "Нажмите на кнопку или введите /global_warming, чтобы получить факт.",
+        reply_markup=get_keyboard()
+    )
+
+# Обработка команды /global_warming и нажатия на кнопку
+@bot.message_handler(commands=['global_warming'])
+@bot.message_handler(func=lambda msg: msg.text == "Узнать про глобальное потепление 🌍")
+def send_fact(message):
+    random_fact = random.choice(FACTS)
+    bot.send_message(message.chat.id, random_fact)
+
+# Запуск бота
+if __name__ == '__main__':
+    print("Бот успешно запущен!")
+    bot.infinity_polling()
